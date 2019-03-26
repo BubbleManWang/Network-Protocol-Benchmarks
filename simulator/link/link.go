@@ -1,5 +1,7 @@
 package link
 
+import "sync"
+
 var IsAlive bool
 
 var XPushCh chan []byte
@@ -10,6 +12,15 @@ var YPullCh chan []byte
 var _rateMin, _rateMax int
 var _lossMin, _lossMax int
 var _delayMin, _delayMax int
+
+type packet struct {
+	data []byte
+	size int
+}
+
+var _queueMutex sync.Mutex
+var _xQueue []packet
+var _yQueue []packet
 
 func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	// TODO: check args
@@ -28,7 +39,8 @@ func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 
 	IsAlive = true
 
-	// TODO: routines
+	go pass()
+	go tick()
 
 	return nil
 }
