@@ -7,6 +7,11 @@ import (
 
 var IsAlive bool
 
+var XRecvCh chan []byte
+var XSendCh chan []byte
+var YRecvCh chan []byte
+var YSendCh chan []byte
+
 var _mConn *net.UDPConn
 var _xAddr *net.UDPAddr
 var _yAddr *net.UDPAddr
@@ -36,9 +41,15 @@ func Initialize(listenPort, leftPort, rightPort int) error {
 	_xAddr = xAddr
 	_yAddr = yAddr
 
+	XRecvCh = make(chan []byte)
+	XSendCh = make(chan []byte)
+	YRecvCh = make(chan []byte)
+	YSendCh = make(chan []byte)
+
 	IsAlive = true
 
-	// TODO: send/recv routines
+	go recv()
+	go send()
 
 	return nil
 }
@@ -49,6 +60,11 @@ func Shutdown() {
 	}
 
 	IsAlive = false
+
+	close(XRecvCh)
+	close(XSendCh)
+	close(YRecvCh)
+	close(YSendCh)
 
 	_mConn.Close()
 }
