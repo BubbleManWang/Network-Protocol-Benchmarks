@@ -6,7 +6,7 @@ func recv() {
 		len, addr, err := _mConn.ReadFromUDP(buf)
 		if err != nil {
 			// TODO: log err - failed to read
-			Shutdown()
+			Kill()
 			return
 		}
 
@@ -29,27 +29,27 @@ func send() {
 		case data, ok := <-XSendCh:
 			if !ok {
 				// TODO: log err - channel closed
-				Shutdown()
+				Kill()
 				return
 			}
 
 			_, err := _mConn.WriteToUDP(data, _xAddr)
 			if err != nil {
 				// TODO: log err - failed to write
-				Shutdown()
+				Kill()
 				return
 			}
 		case data, ok := <-YSendCh:
 			if !ok {
 				// TODO: log err - channel closed
-				Shutdown()
+				Kill()
 				return
 			}
 
 			_, err := _mConn.WriteToUDP(data, _yAddr)
 			if err != nil {
 				// TODO: log err - failed to write
-				Shutdown()
+				Kill()
 				return
 			}
 		}

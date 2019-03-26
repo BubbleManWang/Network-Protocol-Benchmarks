@@ -16,7 +16,7 @@ var _mConn *net.UDPConn
 var _xAddr *net.UDPAddr
 var _yAddr *net.UDPAddr
 
-func Initialize(listenPort, leftPort, rightPort int) error {
+func Spawn(listenPort, leftPort, rightPort int) error {
 	mAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", listenPort))
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func Initialize(listenPort, leftPort, rightPort int) error {
 	return nil
 }
 
-func Shutdown() {
+func Kill() {
 	if !IsAlive {
 		return
 	}

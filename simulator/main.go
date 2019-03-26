@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	err := proxy.Initialize(1337, 9696, 6969)
+	err := proxy.Spawn(1337, 9696, 6969)
 	if err != nil {
-		fmt.Printf("cannot initialize proxy > %s", err)
+		fmt.Printf("cannot spawn proxy > %s", err)
 		return
 	}
 
