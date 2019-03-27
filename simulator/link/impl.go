@@ -32,7 +32,7 @@ func pass() {
 			toX = false
 		}
 
-		// TODO: rate limiting, loss chance, additional delay
+		// TODO: rate limiting, loss chance, additional delay (XLossCh <- pkt)
 
 		_queueMutex.Lock()
 		{

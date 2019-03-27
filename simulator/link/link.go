@@ -9,8 +9,10 @@ import (
 var IsAlive bool
 
 var XPushCh chan *core.Packet
+var XLossCh chan *core.Packet
 var XPullCh chan *core.Packet
 var YPushCh chan *core.Packet
+var YLossCh chan *core.Packet
 var YPullCh chan *core.Packet
 
 var _rateMin, _rateMax int
@@ -32,8 +34,10 @@ func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	_delayMax = delayMax
 
 	XPushCh = make(chan *core.Packet)
+	XLossCh = make(chan *core.Packet)
 	XPullCh = make(chan *core.Packet)
 	YPushCh = make(chan *core.Packet)
+	YLossCh = make(chan *core.Packet)
 	YPullCh = make(chan *core.Packet)
 
 	IsAlive = true
@@ -52,7 +56,9 @@ func Kill() {
 	IsAlive = false
 
 	close(XPushCh)
+	close(XLossCh)
 	close(XPullCh)
 	close(YPushCh)
+	close(YLossCh)
 	close(YPullCh)
 }
