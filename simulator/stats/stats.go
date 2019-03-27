@@ -1,8 +1,6 @@
 package stats
 
 import (
-	"errors"
-
 	"../core"
 )
 
@@ -20,10 +18,42 @@ var YPullCh chan *core.Packet
 var YSendCh chan *core.Packet
 
 func Spawn() error {
-	// TODO
-	return errors.New("not implemented")
+	// TODO: create log file `stats-<timestamp>.log`
+
+	XRecvCh = make(chan *core.Packet)
+	XPushCh = make(chan *core.Packet)
+	XLossCh = make(chan *core.Packet)
+	XPullCh = make(chan *core.Packet)
+	XSendCh = make(chan *core.Packet)
+	YRecvCh = make(chan *core.Packet)
+	YPushCh = make(chan *core.Packet)
+	YLossCh = make(chan *core.Packet)
+	YPullCh = make(chan *core.Packet)
+	YSendCh = make(chan *core.Packet)
+
+	IsAlive = true
+
+	// TODO: go record()
+	// TODO: go flush()
+
+	return nil
 }
 
 func Kill() {
-	// TODO
+	if !IsAlive {
+		return
+	}
+
+	IsAlive = false
+
+	close(XRecvCh)
+	close(XPushCh)
+	close(XLossCh)
+	close(XPullCh)
+	close(XSendCh)
+	close(YRecvCh)
+	close(YPushCh)
+	close(YLossCh)
+	close(YPullCh)
+	close(YSendCh)
 }
