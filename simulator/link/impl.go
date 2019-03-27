@@ -1,46 +1,42 @@
 package link
 
-import "time"
+import (
+	"time"
+
+	"../core"
+)
 
 func pass() {
-	var data []byte
-	var size int
-	var forX bool
+	var pkt *core.Packet
+	var toX bool
 
 	for IsAlive {
 		select {
-		case pkt, ok := <-XPushCh:
+		case p, ok := <-XPushCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
 				return
 			}
 
-			data = pkt
-			size = len(pkt)
-			forX = true
-		case pkt, ok := <-YPushCh:
+			pkt = p
+			toX = true
+		case p, ok := <-YPushCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
 				return
 			}
 
-			data = pkt
-			size = len(pkt)
-			forX = false
+			pkt = p
+			toX = false
 		}
 
 		// TODO: rate limiting, loss chance, additional delay
 
 		_queueMutex.Lock()
 		{
-			pkt := packet{
-				data,
-				size,
-			}
-
-			if forX {
+			if toX {
 				_xQueue = append(_xQueue, pkt)
 			} else {
 				_yQueue = append(_yQueue, pkt)
@@ -59,14 +55,14 @@ func tick() {
 			// TODO: packet expiry check for additional delay
 
 			for _, pkt := range _xQueue {
-				XPullCh <- pkt.data
+				XPullCh <- pkt
 			}
-			_xQueue = make([]packet, 0)
+			_xQueue = make([]*core.Packet, 0)
 
 			for _, pkt := range _yQueue {
-				YPullCh <- pkt.data
+				YPullCh <- pkt
 			}
-			_yQueue = make([]packet, 0)
+			_yQueue = make([]*core.Packet, 0)
 		}
 		_queueMutex.Unlock()
 

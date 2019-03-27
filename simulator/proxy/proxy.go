@@ -3,14 +3,16 @@ package proxy
 import (
 	"fmt"
 	"net"
+
+	"../core"
 )
 
 var IsAlive bool
 
-var XRecvCh chan []byte
-var XSendCh chan []byte
-var YRecvCh chan []byte
-var YSendCh chan []byte
+var XRecvCh chan *core.Packet
+var XSendCh chan *core.Packet
+var YRecvCh chan *core.Packet
+var YSendCh chan *core.Packet
 
 var _mConn *net.UDPConn
 var _xAddr *net.UDPAddr
@@ -41,10 +43,10 @@ func Spawn(listenPort, leftPort, rightPort int) error {
 	_xAddr = xAddr
 	_yAddr = yAddr
 
-	XRecvCh = make(chan []byte)
-	XSendCh = make(chan []byte)
-	YRecvCh = make(chan []byte)
-	YSendCh = make(chan []byte)
+	XRecvCh = make(chan *core.Packet)
+	XSendCh = make(chan *core.Packet)
+	YRecvCh = make(chan *core.Packet)
+	YSendCh = make(chan *core.Packet)
 
 	IsAlive = true
 

@@ -1,5 +1,9 @@
 package proxy
 
+import (
+	"../core"
+)
+
 func recv() {
 	buf := make([]byte, 1500)
 	for IsAlive {
@@ -10,13 +14,15 @@ func recv() {
 			return
 		}
 
-		data := make([]byte, len)
-		copy(data, buf)
+		pkt := core.GeneratePacket()
+		pkt.Payload = make([]byte, len)
+		pkt.Size = len
+		copy(pkt.Payload, buf)
 
 		if addr.Port == _xAddr.Port {
-			XRecvCh <- data
+			XRecvCh <- pkt
 		} else if addr.Port == _yAddr.Port {
-			YRecvCh <- data
+			YRecvCh <- pkt
 		} else {
 			// TODO: log warn = data from unexpected port
 		}
@@ -26,27 +32,27 @@ func recv() {
 func send() {
 	for IsAlive {
 		select {
-		case data, ok := <-XSendCh:
+		case pkt, ok := <-XSendCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
 				return
 			}
 
-			_, err := _mConn.WriteToUDP(data, _xAddr)
+			_, err := _mConn.WriteToUDP(pkt.Payload, _xAddr)
 			if err != nil {
 				// TODO: log err - failed to write
 				Kill()
 				return
 			}
-		case data, ok := <-YSendCh:
+		case pkt, ok := <-YSendCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
 				return
 			}
 
-			_, err := _mConn.WriteToUDP(data, _yAddr)
+			_, err := _mConn.WriteToUDP(pkt.Payload, _yAddr)
 			if err != nil {
 				// TODO: log err - failed to write
 				Kill()

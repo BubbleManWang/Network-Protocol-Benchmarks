@@ -26,14 +26,14 @@ func main() {
 
 	for {
 		select {
-		case xRecv := <-proxy.XRecvCh:
-			link.YPushCh <- xRecv
-		case yRecv := <-proxy.YRecvCh:
-			link.XPushCh <- yRecv
-		case xPull := <-link.XPullCh:
-			proxy.XSendCh <- xPull
-		case yPull := <-link.YPullCh:
-			proxy.YSendCh <- yPull
+		case pkt := <-proxy.XRecvCh:
+			link.YPushCh <- pkt
+		case pkt := <-proxy.YRecvCh:
+			link.XPushCh <- pkt
+		case pkt := <-link.XPullCh:
+			proxy.XSendCh <- pkt
+		case pkt := <-link.YPullCh:
+			proxy.YSendCh <- pkt
 		}
 	}
 }

@@ -1,26 +1,25 @@
 package link
 
-import "sync"
+import (
+	"sync"
+
+	"../core"
+)
 
 var IsAlive bool
 
-var XPushCh chan []byte
-var XPullCh chan []byte
-var YPushCh chan []byte
-var YPullCh chan []byte
+var XPushCh chan *core.Packet
+var XPullCh chan *core.Packet
+var YPushCh chan *core.Packet
+var YPullCh chan *core.Packet
 
 var _rateMin, _rateMax int
 var _lossMin, _lossMax int
 var _delayMin, _delayMax int
 
-type packet struct {
-	data []byte
-	size int
-}
-
 var _queueMutex sync.Mutex
-var _xQueue []packet
-var _yQueue []packet
+var _xQueue []*core.Packet
+var _yQueue []*core.Packet
 
 func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	// TODO: check args
@@ -32,10 +31,10 @@ func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	_delayMin = delayMin
 	_delayMax = delayMax
 
-	XPushCh = make(chan []byte)
-	XPullCh = make(chan []byte)
-	YPushCh = make(chan []byte)
-	YPullCh = make(chan []byte)
+	XPushCh = make(chan *core.Packet)
+	XPullCh = make(chan *core.Packet)
+	YPushCh = make(chan *core.Packet)
+	YPullCh = make(chan *core.Packet)
 
 	IsAlive = true
 
