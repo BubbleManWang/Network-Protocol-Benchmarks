@@ -5,10 +5,18 @@ import (
 
 	"./link"
 	"./proxy"
+	"./stats"
 )
 
 func main() {
 	var err error
+
+	err = stats.Spawn()
+	if err != nil {
+		fmt.Printf("cannot spawn stats > %s\n", err)
+		return
+	}
+	defer stats.Kill()
 
 	err = link.Spawn(1024, 2048, 10, 20, 50, 100)
 	if err != nil {

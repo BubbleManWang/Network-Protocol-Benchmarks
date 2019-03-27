@@ -33,8 +33,8 @@ func Spawn() error {
 
 	IsAlive = true
 
-	// TODO: go record()
-	// TODO: go flush()
+	go record()
+	go flush()
 
 	return nil
 }
