@@ -4,12 +4,20 @@ import (
 	"fmt"
 
 	"./link"
+	"./logs"
 	"./proxy"
 	"./stats"
 )
 
 func main() {
 	var err error
+
+	err = logs.Spawn("logs")
+	if err != nil {
+		fmt.Printf("cannot spawn logs > %s\n", err)
+		return
+	}
+	defer logs.Kill()
 
 	err = stats.Spawn()
 	if err != nil {

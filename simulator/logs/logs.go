@@ -1,22 +1,63 @@
 package logs
 
-import "errors"
+import (
+	"fmt"
+	"os"
+	"time"
+)
 
 var IsAlive bool
 
-func Spawn() error {
-	// TODO
-	return errors.New("not implemented")
+var _fStats *os.File
+var _fTrace *os.File
+
+func Spawn(path string) error {
+	subPath := fmt.Sprintf("%s/%d", path, time.Now().Unix())
+
+	err := os.MkdirAll(subPath, os.ModePerm)
+	if err != nil {
+		return err
+	}
+
+	fStats, err := os.Create(fmt.Sprintf("%s/stats.log", subPath))
+	if err != nil {
+		return err
+	}
+
+	fTrace, err := os.Create(fmt.Sprintf("%s/trace.log", subPath))
+	if err != nil {
+		fStats.Close()
+		return err
+	}
+
+	_fStats = fStats
+	_fTrace = fTrace
+
+	return nil
 }
 
 func LogStats() {
-	// TODO: write to `/<timestamp>/stats.log`
+	// TODO: write to `_fStats`
 }
 
 func LogTrace() {
-	// TODO: write to `/<timestamp>/trace.log`
+	// TODO: write to `_fTrace`
 }
 
 func Kill() {
-	// TODO
+	if !IsAlive {
+		return
+	}
+
+	IsAlive = false
+
+	if _fStats != nil {
+		_fStats.Close()
+		_fStats = nil
+	}
+
+	if _fTrace != nil {
+		_fTrace.Close()
+		_fTrace = nil
+	}
 }
