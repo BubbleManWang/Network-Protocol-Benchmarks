@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"../core"
+	"../logs"
 )
 
 func recv() {
@@ -9,7 +10,7 @@ func recv() {
 	for IsAlive {
 		len, addr, err := _mConn.ReadFromUDP(buf)
 		if err != nil {
-			// TODO: log err - failed to read
+			logs.LogTrace("cannot read from socket > %s", err)
 			Kill()
 			return
 		}
@@ -24,7 +25,7 @@ func recv() {
 		} else if addr.Port == _yAddr.Port {
 			YRecvCh <- pkt
 		} else {
-			// TODO: log warn = data from unexpected port
+			logs.LogTrace("data read from unexpected port > %d", addr.Port)
 		}
 	}
 }
@@ -34,27 +35,27 @@ func send() {
 		select {
 		case pkt, ok := <-XSendCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("x send channel is closed")
 				Kill()
 				return
 			}
 
 			_, err := _mConn.WriteToUDP(pkt.Payload, _xAddr)
 			if err != nil {
-				// TODO: log err - failed to write
+				logs.LogTrace("cannot write to socket > %s", err)
 				Kill()
 				return
 			}
 		case pkt, ok := <-YSendCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("y send channel is closed")
 				Kill()
 				return
 			}
 
 			_, err := _mConn.WriteToUDP(pkt.Payload, _yAddr)
 			if err != nil {
-				// TODO: log err - failed to write
+				logs.LogTrace("cannot write to socket > %s", err)
 				Kill()
 				return
 			}
