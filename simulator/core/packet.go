@@ -15,7 +15,7 @@ type Packet struct {
 	SendTime   int64
 }
 
-func GeneratePacket() *Packet {
+func GenPacket() *Packet {
 	atomic.AddUint64(&_packetCounter, 1)
 
 	pkt := Packet{}

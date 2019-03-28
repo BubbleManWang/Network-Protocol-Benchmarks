@@ -14,7 +14,7 @@ func recv() {
 			return
 		}
 
-		pkt := core.GeneratePacket()
+		pkt := core.GenPacket()
 		pkt.Payload = make([]byte, len)
 		pkt.Size = len
 		copy(pkt.Payload, buf)
