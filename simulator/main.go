@@ -36,12 +36,20 @@ func main() {
 		select {
 		case pkt := <-proxy.XRecvCh:
 			link.YPushCh <- pkt
-		case pkt := <-proxy.YRecvCh:
-			link.XPushCh <- pkt
+			stats.XRecvCh <- pkt
+		case pkt := <-link.XLossCh:
+			stats.XLossCh <- pkt
 		case pkt := <-link.XPullCh:
 			proxy.XSendCh <- pkt
+			stats.XSendCh <- pkt
+		case pkt := <-proxy.YRecvCh:
+			link.XPushCh <- pkt
+			stats.YRecvCh <- pkt
+		case pkt := <-link.YLossCh:
+			stats.YLossCh <- pkt
 		case pkt := <-link.YPullCh:
 			proxy.YSendCh <- pkt
+			stats.YSendCh <- pkt
 		}
 	}
 }
