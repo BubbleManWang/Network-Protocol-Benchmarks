@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"./link"
 	"./logs"
 	"./proxy"
@@ -14,32 +12,37 @@ func main() {
 
 	err = logs.Spawn("logs")
 	if err != nil {
-		fmt.Printf("cannot spawn logs > %s\n", err)
+		logs.LogTrace("cannot spawn logs > %s\n", err)
 		return
 	}
 	defer logs.Kill()
+	logs.LogTrace("logs spawned")
 
 	err = stats.Spawn()
 	if err != nil {
-		fmt.Printf("cannot spawn stats > %s\n", err)
+		logs.LogTrace("cannot spawn stats > %s\n", err)
 		return
 	}
 	defer stats.Kill()
+	logs.LogTrace("stats spawned")
 
 	err = link.Spawn(1024, 2048, 10, 20, 50, 100)
 	if err != nil {
-		fmt.Printf("cannot spawn link > %s\n", err)
+		logs.LogTrace("cannot spawn link > %s\n", err)
 		return
 	}
 	defer link.Kill()
+	logs.LogTrace("link spawned")
 
 	err = proxy.Spawn(1337, 9696, 6969)
 	if err != nil {
-		fmt.Printf("cannot spawn proxy > %s\n", err)
+		logs.LogTrace("cannot spawn proxy > %s\n", err)
 		return
 	}
 	defer proxy.Kill()
+	logs.LogTrace("proxy spawned")
 
+	logs.LogTrace("routing channels")
 	for {
 		select {
 		case pkt := <-proxy.XRecvCh:
