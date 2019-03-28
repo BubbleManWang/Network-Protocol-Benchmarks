@@ -14,8 +14,6 @@ var YLossCh chan *core.Packet
 var YSendCh chan *core.Packet
 
 func Spawn() error {
-	// TODO: create log file `stats-<timestamp>.log`
-
 	XRecvCh = make(chan *core.Packet)
 	XLossCh = make(chan *core.Packet)
 	XSendCh = make(chan *core.Packet)
