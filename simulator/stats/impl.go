@@ -13,23 +13,7 @@ func record() {
 			}
 
 			// TODO
-		case _, ok := <-XPushCh:
-			if !ok {
-				// TODO: log err - channel closed
-				Kill()
-				return
-			}
-
-			// TODO
 		case _, ok := <-XLossCh:
-			if !ok {
-				// TODO: log err - channel closed
-				Kill()
-				return
-			}
-
-			// TODO
-		case _, ok := <-XPullCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
@@ -53,23 +37,7 @@ func record() {
 			}
 
 			// TODO
-		case _, ok := <-YPushCh:
-			if !ok {
-				// TODO: log err - channel closed
-				Kill()
-				return
-			}
-
-			// TODO
 		case _, ok := <-YLossCh:
-			if !ok {
-				// TODO: log err - channel closed
-				Kill()
-				return
-			}
-
-			// TODO
-		case _, ok := <-YPullCh:
 			if !ok {
 				// TODO: log err - channel closed
 				Kill()
