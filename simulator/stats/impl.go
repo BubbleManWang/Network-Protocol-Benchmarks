@@ -1,13 +1,17 @@
 package stats
 
-import "time"
+import (
+	"time"
+
+	"../logs"
+)
 
 func record() {
 	for IsAlive {
 		select {
 		case _, ok := <-XRecvCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("x recv channel is closed")
 				Kill()
 				return
 			}
@@ -15,7 +19,7 @@ func record() {
 			// TODO
 		case _, ok := <-XLossCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("x loss channel is closed")
 				Kill()
 				return
 			}
@@ -23,7 +27,7 @@ func record() {
 			// TODO
 		case _, ok := <-XSendCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("x send channel is closed")
 				Kill()
 				return
 			}
@@ -31,7 +35,7 @@ func record() {
 			// TODO
 		case _, ok := <-YRecvCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("y recv channel is closed")
 				Kill()
 				return
 			}
@@ -39,7 +43,7 @@ func record() {
 			// TODO
 		case _, ok := <-YLossCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("y loss channel is closed")
 				Kill()
 				return
 			}
@@ -47,7 +51,7 @@ func record() {
 			// TODO
 		case _, ok := <-YSendCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("y send channel is closed")
 				Kill()
 				return
 			}
@@ -61,6 +65,6 @@ func flush() {
 	for IsAlive {
 		time.Sleep(time.Second)
 
-		// TODO: write-out accumulated stats to log file
+		// TODO: log accumulated stats (logs.LogStats)
 	}
 }
