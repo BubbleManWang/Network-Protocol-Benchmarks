@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"../core"
+	"../logs"
 )
 
 func pass() {
@@ -14,7 +15,7 @@ func pass() {
 		select {
 		case p, ok := <-XPushCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("x push channel is closed")
 				Kill()
 				return
 			}
@@ -23,7 +24,7 @@ func pass() {
 			toX = true
 		case p, ok := <-YPushCh:
 			if !ok {
-				// TODO: log err - channel closed
+				logs.LogTrace("y push channel is closed")
 				Kill()
 				return
 			}
