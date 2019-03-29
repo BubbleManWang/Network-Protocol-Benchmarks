@@ -9,14 +9,11 @@ import (
 
 var IsAlive bool
 
-var XRecvCh chan *core.Packet
-var XSendCh chan *core.Packet
-var YRecvCh chan *core.Packet
-var YSendCh chan *core.Packet
+var XRecvCh, XSendCh chan *core.Packet
+var YRecvCh, YSendCh chan *core.Packet
 
 var _mConn *net.UDPConn
-var _xAddr *net.UDPAddr
-var _yAddr *net.UDPAddr
+var _xAddr, _yAddr *net.UDPAddr
 
 func Spawn(listenPort, leftPort, rightPort int) error {
 	mAddr, err := net.ResolveUDPAddr("udp", fmt.Sprintf("localhost:%d", listenPort))

@@ -8,20 +8,15 @@ import (
 
 var IsAlive bool
 
-var XPushCh chan *core.Packet
-var XLossCh chan *core.Packet
-var XPullCh chan *core.Packet
-var YPushCh chan *core.Packet
-var YLossCh chan *core.Packet
-var YPullCh chan *core.Packet
+var XPushCh, XLossCh, XPullCh chan *core.Packet
+var YPushCh, YLossCh, YPullCh chan *core.Packet
 
 var _rateMin, _rateMax int
 var _lossMin, _lossMax int
 var _delayMin, _delayMax int
 
 var _queueMutex sync.Mutex
-var _xQueue []*core.Packet
-var _yQueue []*core.Packet
+var _xQueue, _yQueue []*core.Packet
 
 func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	// TODO: check args

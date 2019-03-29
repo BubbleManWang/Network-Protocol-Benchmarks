@@ -6,12 +6,8 @@ import (
 
 var IsAlive bool
 
-var XRecvCh chan *core.Packet
-var XLossCh chan *core.Packet
-var XSendCh chan *core.Packet
-var YRecvCh chan *core.Packet
-var YLossCh chan *core.Packet
-var YSendCh chan *core.Packet
+var XRecvCh, XLossCh, XSendCh chan *core.Packet
+var YRecvCh, YLossCh, YSendCh chan *core.Packet
 
 func Spawn() error {
 	XRecvCh = make(chan *core.Packet)

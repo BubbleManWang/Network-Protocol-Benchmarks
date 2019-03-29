@@ -8,8 +8,7 @@ import (
 
 var IsAlive bool
 
-var _fStats *os.File
-var _fTrace *os.File
+var _fStats, _fTrace *os.File
 
 var _prefixLength int
 
