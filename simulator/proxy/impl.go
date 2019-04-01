@@ -1,6 +1,8 @@
 package proxy
 
 import (
+	"time"
+
 	"../core"
 	"../logs"
 )
@@ -19,6 +21,7 @@ func recv() {
 		pkt.Payload = make([]byte, len)
 		pkt.Size = len
 		copy(pkt.Payload, buf)
+		pkt.RecvTime = time.Now().UnixNano()
 
 		if addr.Port == _xAddr.Port {
 			XRecvCh <- pkt
@@ -40,6 +43,7 @@ func send() {
 				return
 			}
 
+			pkt.SendTime = time.Now().UnixNano()
 			_, err := _mConn.WriteToUDP(pkt.Payload, _xAddr)
 			if err != nil {
 				logs.LogTrace("cannot write to socket > %s", err)
@@ -53,6 +57,7 @@ func send() {
 				return
 			}
 
+			pkt.SendTime = time.Now().UnixNano()
 			_, err := _mConn.WriteToUDP(pkt.Payload, _yAddr)
 			if err != nil {
 				logs.LogTrace("cannot write to socket > %s", err)

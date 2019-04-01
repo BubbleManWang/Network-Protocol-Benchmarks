@@ -3,6 +3,7 @@ package link
 import (
 	"time"
 
+	"../conds"
 	"../core"
 	"../logs"
 )
@@ -33,40 +34,54 @@ func pass() {
 			toX = false
 		}
 
-		// TODO: rate limiting, loss chance, additional delay (XLossCh <- pkt)
-
-		_queueMutex.Lock()
-		{
-			if toX {
-				_xQueue = append(_xQueue, pkt)
+		pkt.ExpiryTime = time.Now().UnixNano() + conds.Delay()
+		if toX {
+			if conds.Loss(pkt.Size) {
+				XLossCh <- pkt
 			} else {
+				_queueMutex.Lock()
+				_xQueue = append(_xQueue, pkt)
+				_queueMutex.Unlock()
+			}
+		} else {
+			if conds.Loss(pkt.Size) {
+				YLossCh <- pkt
+			} else {
+				_queueMutex.Lock()
 				_yQueue = append(_yQueue, pkt)
+				_queueMutex.Unlock()
 			}
 		}
-		_queueMutex.Unlock()
 	}
 }
 
 func tick() {
 	for IsAlive {
 		time.Sleep(time.Millisecond * 8) // ~10ms, up to 125 ticks
+		nowNano := time.Now().UnixNano()
 
 		_queueMutex.Lock()
 		{
-			// TODO: packet expiry check for additional delay
-
+			var xQueueNew []*core.Packet
 			for _, pkt := range _xQueue {
-				XPullCh <- pkt
+				if pkt.ExpiryTime < nowNano {
+					XPullCh <- pkt
+				} else {
+					xQueueNew = append(xQueueNew, pkt)
+				}
 			}
-			_xQueue = make([]*core.Packet, 0)
+			_xQueue = xQueueNew
 
+			var yQueueNew []*core.Packet
 			for _, pkt := range _yQueue {
-				YPullCh <- pkt
+				if pkt.ExpiryTime < nowNano {
+					YPullCh <- pkt
+				} else {
+					yQueueNew = append(yQueueNew, pkt)
+				}
 			}
-			_yQueue = make([]*core.Packet, 0)
+			_yQueue = yQueueNew
 		}
 		_queueMutex.Unlock()
-
-		// TODO: update condition modifiers
 	}
 }

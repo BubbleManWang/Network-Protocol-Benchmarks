@@ -1,22 +1,25 @@
 package conds
 
-import "errors"
+import (
+	"../logs"
+)
 
 var IsAlive bool
 
 func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	// TODO
-	return errors.New("not implemented")
+	logs.LogTrace("not implemented yet")
+	return nil
+}
+
+func Delay() int64 {
+	// TODO: delay & jitter
+	return 0
 }
 
 func Loss(packetSize int) bool {
-	// TODO: rate limiting, loss chance
+	// TODO: rate limit & loss chance
 	return false
-}
-
-func Delay() int {
-	// TODO
-	return 0
 }
 
 func Kill() {

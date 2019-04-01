@@ -1,6 +1,7 @@
 package main
 
 import (
+	"./conds"
 	"./link"
 	"./logs"
 	"./proxy"
@@ -26,7 +27,15 @@ func main() {
 	defer stats.Kill()
 	logs.LogTrace("stats spawned")
 
-	err = link.Spawn(1024, 2048, 10, 20, 50, 100)
+	err = conds.Spawn(1024, 2048, 10, 20, 50, 100)
+	if err != nil {
+		logs.LogTrace("cannot spawn conds > %s\n", err)
+		return
+	}
+	defer conds.Kill()
+	logs.LogTrace("conds spawned")
+
+	err = link.Spawn()
 	if err != nil {
 		logs.LogTrace("cannot spawn link > %s\n", err)
 		return
