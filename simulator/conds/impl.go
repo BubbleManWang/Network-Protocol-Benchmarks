@@ -10,12 +10,15 @@ func update() {
 	for IsAlive {
 		time.Sleep(time.Second)
 
-		// delay
-		if delayDiff := _delayMax - _delayMin; delayDiff > 0 {
-			_condDelay = int64(_delayMin + rand.Intn(delayDiff))
-			_condDelay *= time.Millisecond.Nanoseconds()
-		}
+		updateDelay()
 
-		// TODO: update _condRate, _condLoss
+		// TODO: loss, rate ?
 	}
+}
+
+func updateDelay() {
+	delayDiff := _delayMax - _delayMin
+	delayRand := _delayMin + rand.Intn(delayDiff)
+	// TODO: DelayCh <- delayRand
+	_condDelay = int64(delayRand) * time.Millisecond.Nanoseconds()
 }
