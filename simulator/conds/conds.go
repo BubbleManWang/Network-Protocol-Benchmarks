@@ -1,5 +1,9 @@
 package conds
 
+import (
+	"sync/atomic"
+)
+
 var IsAlive bool
 
 var RateCh, LossCh, DelayCh chan int
@@ -9,6 +13,9 @@ var _lossMin, _lossMax int
 var _delayMin, _delayMax int
 
 var _condDelay int64
+
+var _condLossPool []bool
+var _lossCounter uint32
 
 func Spawn(rateMin, rateMax, lossMin, lossMax, delayMin, delayMax int) error {
 	// TODO: check args?
@@ -38,8 +45,8 @@ func Delay() int64 {
 }
 
 func Loss(packetSize int) bool {
-	// TODO: rate limit & loss chance
-	return false
+	// TODO: rate limit ?
+	return _condLossPool[atomic.AddUint32(&_lossCounter, 1)%100]
 }
 
 func Kill() {
